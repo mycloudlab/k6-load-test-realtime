@@ -1,0 +1,13 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: grafana
+spec:
+  host: grafana.apps.cluster-gbqsr.dynamic.redhatworkshops.io
+  to:
+    kind: Service
+    name: grafana-service
+    weight: 100
+  port:
+    targetPort: 3000
+  wildcardPolicy: None

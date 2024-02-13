@@ -1,0 +1,41 @@
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: k6-sample
+spec:
+  parallelism: 4
+  script:
+    configMap:
+      name: scenarios-test
+      file: test.js
+  separate: false
+  arguments: --tag testid=test-2024-02-12
+  runner:
+    image: mycloudlab/k6-influxdb:0.48.0 
+    env:
+      - name: K6_INFLUXDB_ORGANIZATION
+        valueFrom:
+          secretKeyRef:
+            name: influxdb-secrets
+            key: DOCKER_INFLUXDB_INIT_ORG
+      - name: K6_INFLUXDB_BUCKET
+        valueFrom:
+          secretKeyRef:
+            name: influxdb-secrets
+            key: DOCKER_INFLUXDB_INIT_BUCKET
+      - name: K6_INFLUXDB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: influxdb-secrets
+            key: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+      - name: K6_INFLUXDB_INSECURE
+        value: "true"
+      - name: K6_OUT
+        value: xk6-influxdb=http://influxdb-service:8086
+    resources:
+      limits:
+        cpu: 200m
+        memory: 1000Mi
+      requests:
+        cpu: 100m
+        memory: 500Mi
